@@ -10,7 +10,7 @@
     "test": "newman run collection/Homework2.postman_collection.json -r htmlextra --reporter-htmlextra-export / reports/report.html"
   },
   "dependencies": {
-    "newman": "^2.1.2",
-    "newman-reporter-htmlextra": "^1.22.5"
+    "newman": "2.1.2",
+    "newman-reporter-htmlextra": "1.22.5"
   }
 }
