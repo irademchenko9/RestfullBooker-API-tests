@@ -1,0 +1,44 @@
+# Workflow for running Postman API tests
+name: Postman Tests
+
+# Trigger: manually via GitHub Actions UI (workflow_dispatch)
+on:
+    workflow_dispatch:
+
+jobs:
+    test:
+        # Maximum time the job can run before being cancelled
+        timeout-minutes: 3
+        # Use the latest Ubuntu virtual environment
+        runs-on: ubuntu-latest
+
+        steps:
+            # Step 1: Checkout the repository code to the runner
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # Step 2: Set up Node.js environment with the latest LTS version
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
+            # Step 3: Install project dependencies using clean install (npm ci)
+            # npm ci is faster and more reliable for CI environments
+            - name: Install dependencies
+              run: npm ci
+
+            # Step 4: Execute the Postman collection tests using Newman
+            - name: Run Postman collection
+              run: npm run test
+
+            # Step 5: Upload test results as an artifact
+            # The artifact will be available for download in the Actions tab
+            # if: ${{ !cancelled() }} ensures upload happens even if tests fail
+            - name: Upload test report
+              uses: actions/upload-artifact@v4
+              if: ${{ !cancelled() }}
+              with:
+                  name: report
+                  path: results/
+                  retention-days: 30
